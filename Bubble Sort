@@ -1,0 +1,50 @@
+using System;
+using System.Collections.Specialized;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Xml.Linq;
+
+
+
+
+class Program
+{
+
+    static public void BubbleSort(ref int[] arr, int n)
+    {
+        
+        for(int i =0; i < n-1; i++)
+        {
+            bool flag = true;
+            for (int j = 0; j < n-1 -i; j++)
+            {
+                if(arr[j] > arr[j+1])
+                {
+                    int tmp = arr[j];
+                    arr[j] = arr[j+1];
+                    arr[j+1] = tmp;
+
+                    flag = false;
+                }
+            }
+            if (flag)
+                return;
+        }
+    }
+    static void Main()
+    {
+        int[] arr = { 10,20,40,30,50,60 };
+        BubbleSort(ref arr, arr.Length);
+
+        foreach (int i in arr)
+        {
+            Console.Write(i +" "); 
+        }
+       
+
+        Console.WriteLine();
+
+    }
+
+}
