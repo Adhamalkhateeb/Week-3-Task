@@ -1,0 +1,79 @@
+using System;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Xml.Linq;
+
+public class HuffmanNode
+{
+    public char Symbol;
+    public int Frequency;
+    public HuffmanNode Left, Right;
+}
+
+public class NodeComparer : IComparer<HuffmanNode>
+{
+    public int Compare(HuffmanNode x,HuffmanNode y) => x.Frequency - y.Frequency;
+
+}
+
+public class HuffManCoding
+{
+    public static Dictionary<char,string> BuildHuffmanTree(string Text)
+    {
+        var freqDic = Text.GroupBy(c => c).ToDictionary(g => g.Key, g => g.Count());
+
+        var piriorityQueue = new SortedSet<HuffmanNode>(new NodeComparer());
+
+        foreach (var kvp in freqDic)
+            piriorityQueue.Add(new HuffmanNode { Symbol = kvp.Key, Frequency = kvp.Value });
+
+        while (piriorityQueue.Count > 1)
+        {
+            var left = piriorityQueue.Min; piriorityQueue.Remove(left);
+            var right = piriorityQueue.Max; piriorityQueue.Remove(right);
+
+            var parent = new HuffmanNode { Left = left, Right = right, Frequency = left.Frequency + right.Frequency };
+            piriorityQueue.Add(parent);
+        }
+
+        var huffmanCodes = new Dictionary<char, string>();
+        GenerateCodes(piriorityQueue.Min, "", huffmanCodes);
+        return huffmanCodes;
+    }
+
+    private static void GenerateCodes(HuffmanNode node, string code, Dictionary<char, string> codes)
+    {
+        if (node == null) return;
+        if (node.Left == null && node.Right == null) codes[node.Symbol] = code;
+        GenerateCodes(node.Left, code + "0", codes);
+        GenerateCodes(node.Right, code + "1", codes);
+    }
+
+    public static string Encode(string text, Dictionary<char, string> codes) =>
+        string.Concat(text.Select(c => codes[c]));
+}
+
+
+
+class Program
+{
+    static void Main()
+    {
+
+        string text = "BCCADBBDABBCCADDCCEE";
+        var codes = HuffManCoding.BuildHuffmanTree(text);
+
+        Console.WriteLine("Huffman Codes:");
+        foreach (var kvp in codes)
+            Console.WriteLine($"{kvp.Key}: {kvp.Value}");
+
+        string encoded = HuffManCoding.Encode(text, codes);
+        Console.WriteLine($"\nEncoded: {encoded}");
+
+
+        Console.WriteLine();
+
+    }
+
+}
