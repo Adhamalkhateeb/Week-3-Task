@@ -1,0 +1,126 @@
+using System;
+using System.IO;
+using System.Security.Cryptography;
+
+public class TreeNode <T>
+{
+    public T Value;
+    public TreeNode <T> Left, Right;
+
+    public TreeNode(T value)
+    {
+        Value = value;
+        Left = Right = null;
+    }
+}
+
+public class BFS<T>
+{
+    public TreeNode<T> Root;
+
+    public BFS(T rootValue)
+    {
+        Root = new TreeNode<T>(rootValue);
+    }
+
+   
+    public void StartBFS()
+    {
+        if(Root == null) return;
+
+        Queue <TreeNode<T>>  Q = new Queue<TreeNode<T>>();
+
+        Q.Enqueue(Root);
+        while(Q.Count > 0)
+        {
+           
+            TreeNode<T> Curr = Q.Peek();
+            Console.WriteLine(Curr.Value + " ");
+            if (Curr.Left != null)
+                Q.Enqueue(Curr.Left);
+            if (Curr.Right != null)
+                Q.Enqueue(Curr.Right);
+
+            Q.Dequeue();
+        }
+
+    }
+}
+public class  DFS <T>
+{
+
+
+    public TreeNode <T> Root;
+
+    public DFS(T rootValue)
+    {
+        Root = new TreeNode <T>(rootValue);
+    }
+
+    public void PreOrderTraversal(TreeNode<T> Node)
+    {
+        if(Node == null)
+            return;
+
+        Console.WriteLine(Node.Value +" ");
+        PreOrderTraversal(Node.Left);
+        PreOrderTraversal (Node.Right);
+    }
+
+    public void InOrderTraversal(TreeNode<T> Node)
+    {
+        if (Node == null) return;
+        InOrderTraversal(Node.Left);
+        Console.WriteLine(Node.Value + " ");
+        InOrderTraversal(Node.Right);
+    }
+
+    public void PostOrderTraversal(TreeNode<T> Node)
+    {
+        if (Node == null) return;
+        PostOrderTraversal(Node.Left);
+        PostOrderTraversal(Node.Right);
+        Console.WriteLine(Node.Value + " ");
+    }
+
+    public void StartPreOrderTravers()
+    {
+        PreOrderTraversal(Root);
+        Console.WriteLine();
+    }
+
+    public void StartinOrderTravers()
+    {
+        InOrderTraversal(Root);
+        Console.WriteLine();
+    }
+
+    public void StartPostOrderTravers()
+    {
+        PostOrderTraversal(Root);
+        Console.WriteLine();
+    }
+
+
+}
+class Program
+{
+    static void Main()
+    {
+        BFS<char> tree = new BFS<char>('X');
+        tree.Root.Left = new  TreeNode<char>('A');
+        tree.Root.Right = new TreeNode<char>('+');
+        tree.Root.Right.Left = new TreeNode<char>('X');
+        tree.Root.Right.Right = new TreeNode<char>('F');
+        tree.Root.Right.Left.Left = new TreeNode<char>( '+');
+        tree.Root.Right.Left.Right = new TreeNode<char>('X');
+        tree.Root.Right.Left.Left.Left = new TreeNode<char>('B');
+        tree.Root.Right.Left.Left.Right = new TreeNode<char>('C');
+        tree.Root.Right.Left.Right.Right = new TreeNode<char>('E');
+        tree.Root.Right.Left.Right.Left = new TreeNode<char>('D');
+
+        tree.StartBFS();
+
+    }
+
+}
