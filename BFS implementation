@@ -1,0 +1,269 @@
+using System;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Xml.Linq;
+
+public class TreeNode 
+{
+    public int Value;
+    public TreeNode  Left, Right;
+
+    public TreeNode(int value)
+    {
+
+        Value = value;
+        Left = Right = null;
+    }
+}
+
+public class BST
+{
+    public TreeNode Root;
+
+    public BST(int Value)
+    {
+        this.Root = new TreeNode (Value);
+    }
+
+    public void BFS()
+    {
+        if (Root == null) return;
+
+        Queue<TreeNode> Q = new Queue<TreeNode>();
+
+        Q.Enqueue(Root);
+        while (Q.Count > 0)
+        {
+
+            TreeNode Curr = Q.Peek();
+            Console.WriteLine(Curr.Value + " ");
+            if (Curr.Left != null)
+                Q.Enqueue(Curr.Left);
+            if (Curr.Right != null)
+                Q.Enqueue(Curr.Right);
+
+            Q.Dequeue();
+        }
+    }
+    private void PreDFS(TreeNode Node)
+    {
+        if (Node == null)
+            return;
+
+        Console.WriteLine(Node.Value + " ");
+        PreDFS(Node.Left);
+        PreDFS(Node.Right);
+    }
+    private void InDFS(TreeNode Node)
+    {
+        if (Node == null) return;
+        InDFS(Node.Left);
+        Console.WriteLine(Node.Value + " ");
+        InDFS(Node.Right);
+    }
+    private void PostDFS(TreeNode Node)
+    {
+        if (Node == null) return;
+        PostDFS(Node.Left);
+        PostDFS(Node.Right);
+        Console.WriteLine(Node.Value + " ");
+    }
+    public void PostOrderDFS()
+    {
+        PostDFS(Root);
+
+    }
+    public void PreOrderDFS()
+    {
+        PreDFS(Root);
+
+    }
+    public void InOrderDFS()
+    {
+        InDFS(Root);
+
+    }
+    public bool IsEmpty()
+    {
+        return Root == null;
+    }
+    private void _Clear(ref TreeNode Node)
+    {
+        if (Node != null)
+        {
+            _Clear(ref Node.Left);
+            _Clear(ref Node.Right);
+            Node.Left = null;
+            Node.Right = null;
+            Node = null;
+        }
+
+
+    }
+    public void Clear()
+    {
+        _Clear(ref Root);
+    }
+    public void Insert(int value)
+    {
+        Root = InsertRecursive(Root, value);
+    }
+
+    public bool Search(int value)
+    {
+        return SearchRecursive(Root, value);
+    }
+
+    private bool SearchRecursive(TreeNode Node,int value)
+    {
+        if (Node == null) return false;
+
+        if (value < Node.Value)
+            return SearchRecursive(Node.Left, value);
+        else if (value > Node.Value)
+           return SearchRecursive(Node.Right, value);
+        else
+            return true;
+
+
+      
+
+    }
+
+    private TreeNode InsertRecursive(TreeNode node, int value)
+    {
+        if (node == null)
+            return new TreeNode(value);
+
+        if (value < node.Value)
+            node.Left = InsertRecursive(node.Left, value);
+        else if (value > node.Value)
+            node.Right = InsertRecursive(node.Right, value);
+
+        return node;
+    }
+
+    public bool Delete(int value)
+    {
+        if (!Search(value))
+        {
+            Console.WriteLine("Elemnt isn't Found in tree");
+            return false;
+        }; 
+        return DeleteRecursive(ref Root, value);
+    }
+
+    private bool DeleteRecursive(ref TreeNode Node,int value)
+    {
+        if (Node == null) return false;
+
+        if (value < Node.Value)
+            return DeleteRecursive(ref Node.Left, value);
+        else if(value > Node.Value)
+            return DeleteRecursive(ref Node.Right, value);
+        else
+        {
+            if(Node.Left == null && Node.Right == null)
+            {
+                Node = null;
+                return true;
+            }
+            
+            if(Node.Left == null)
+            {
+                Node = Node.Right; return true;
+            }
+
+            if(Node.Right == null)
+            {
+                Node = Node.Left; return true;
+            }
+
+            TreeNode Successor = _FindSuccessor(Node);
+            Node.Value = Successor.Value;
+            if (DeleteRecursive(ref Node.Right, Successor.Value))
+                return true;
+            else
+                return false;
+            
+
+           
+
+        }
+
+    }
+
+
+    public TreeNode _FindSuccessor(TreeNode node)
+    {
+        if (node == null) return null;
+
+        
+        if (node.Right != null)
+        {
+            TreeNode Successor = node.Right;
+            while (Successor.Left != null)
+            {
+                Successor = Successor.Left;
+            }
+            return Successor; 
+        }
+
+     
+        TreeNode successor = null;
+        TreeNode ancestor = Root;
+
+        while (ancestor != null)
+        {
+            if (node.Value.CompareTo(ancestor.Value) < 0) 
+            {
+                successor = ancestor; 
+                ancestor = ancestor.Left;
+            }
+            else if (node.Value.CompareTo(ancestor.Value) > 0) 
+            {
+                ancestor = ancestor.Right;
+            }
+            else
+            {
+                break; 
+            }
+        }
+
+        return successor;
+    }
+
+}
+class Program
+{
+    static void Main()
+    {
+        BST tree = new BST(25);
+        tree.Insert(20);
+        tree.Insert(30);
+        tree.Insert(15);
+        tree.Insert(22);
+        tree.Insert(27);
+        tree.Insert(35);
+        tree.Insert(10);
+        tree.Insert(16);
+        tree.Insert(21);
+ 
+        tree.Insert(23);
+        tree.Insert(26);
+        tree.Insert(28);
+        tree.Insert(34);
+        tree.Insert(40);
+        
+
+
+
+
+
+
+        Console.WriteLine();
+
+    }
+
+}
